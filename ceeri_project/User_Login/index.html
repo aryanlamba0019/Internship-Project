@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Login</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.4.0/justgage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gauge.js@1.3.7/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  </head>
+  <body>
+    <div class="navbar">
+      <div id="greeting">Hello, User_Name</div>
+      <div class="nav-buttons">
+        <button id="contactBtn">Contact Us</button>
+        <button id="logout">Logout</button>
+      </div>
+    </div>
+
+    <div id="room-no"><u>Room Number - XX</u></div>
+
+    <div class="container">
+      <h2 class="envi-heading">
+        <u>Environmental Monitoring Dashboard</u>
+      </h2>
+
+      <div class="gauge-container">
+        <div id="timestamp">Last Updated:</div>
+
+        <div class="box-1">
+          <!-- CO2 Gauge -->
+          <div>
+            <canvas id="co2Gauge"></canvas>
+            <p id="co2Value">CO2 Level: 0 PPM</p>
+          </div>
+
+          <!-- PM2.5 Gauge -->
+          <div>
+            <canvas id="pm25Gauge"></canvas>
+            <p id="pm25Value">PM2.5 Level: 0 PPM</p>
+          </div>
+
+          <!-- CO Gauge -->
+          <div>
+            <canvas id="coGauge"></canvas>
+            <p id="coValue">CO Level: 0 PPM</p>
+          </div>
+        </div>
+
+        <div class="box-2-toggle-container">
+          <div class="box-2">
+            <div>
+              <p id="temperatureValue">Temperature: 0°C</p>
+              <div id="temperatureGauge"></div>
+            </div>
+
+            <div>
+              <p id="humidityValue">Humidity: 0%</p>
+              <div id="humidityGauge"></div>
+            </div>
+
+            <div>
+              <p id="AQIValue">AQI:</p>
+              <div id="AQIGauge"></div>
+            </div>
+          </div>
+
+          <div class="toggle-box">
+            <!-- Manual Control Switch -->
+            <div class="switch-container">
+              <div class="switch" onclick="toggleRoomSwitch">
+                <div class="switch-icon">
+                  <i class="fa-solid fa-toggle-off" id="toggle-icon"></i>
+                </div>
+              </div>
+              <div class="status" id="status-text">Status: Off</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Trends Button -->
+        <button id="viewTrendsBtn" class="view-trends-btn">View Trends</button>
+      </div>
+    </div>
+
+    <!-- Contact Us Modal -->
+    <div id="contactModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><u>Contact Us</u></h2>
+        <form id="contactForm">
+          <textarea
+            id="messageInput"
+            placeholder="Your message here..."
+          ></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Trends Modal -->
+    <div id="trendsModal" class="modal">
+      <div class="trends-modal-content">
+        <!-- Modal Navbar -->
+        <div class="modal-navbar">
+          <span class="trends-close">&times;</span>
+          <h2>Trends</h2>
+          <div class="dropdown">
+            <select id="particulateSelect">
+              <option value="CO2">CO2</option>
+              <option value="PM25">PM2.5</option>
+              <option value="CO">CO</option>
+              <option value="Temperature">Temperature</option>
+              <option value="Humidity">Humidity</option>
+              <option value="AQI">AQI</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lower Section for Min, Max, Avg -->
+        <div class="trends-stats">
+          <span id="minValue">Min: --</span>
+          <span id="maxValue">Max: --</span>
+          <span id="avgValue">Avg: --</span>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- Sidebar for Time Periods -->
+          <div class="sidebar">
+            <ul>
+              <li data-period="last-hour">Last Hour</li>
+              <li data-period="last-day">Last Day</li>
+              <li data-period="this-week">This Week</li>
+              <li data-period="this-month">This Month</li>
+              <li data-period="this-6-month">This 6-Month</li>
+              <li data-period="this-year">This Year</li>
+            </ul>
+          </div>
+
+          <!-- Chart Area -->
+          <div class="chart-container">
+            <canvas id="trendsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="CO2_gauge.js"></script>
+    <script src="CO2_monitoring.js"></script>
+    <script src="main.js"></script>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  </body>
+</html>

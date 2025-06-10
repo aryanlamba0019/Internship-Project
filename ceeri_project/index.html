@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AetherSync Dashboard</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="register.css" />
+    <link rel="stylesheet" href="CO2Monitor.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/justgage/1.4.0/justgage.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gauge.js@1.3.7/dist/gauge.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div id="greeting">Hello, User_Name</div>
+
+      <div class="nav-buttons">
+        <div class="manage-rooms-dropdown">
+          <button class="manage-rooms-btn">Manage Rooms</button>
+          <div class="manage-dropdown-content">
+            <button id="createRoomBtn">Create Room</button>
+            <button id="removeRoomBtn">Remove Room</button>
+          </div>
+        </div>
+        <button id="aboutBtn">About</button>
+        <button id="contactBtn">Contact us</button>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebarBtn">
+        <div class="button">
+          <button id="co2monitoring" type="button">
+            Environmental Monitoring and Control
+          </button>
+          <button id="masterctrl" type="button">Master Control</button>
+          <button id="userregistration" type="button">User Registration</button>
+        </div>
+      </div>
+
+      <div class="logout-button" id="logoutBtn">
+        <div>
+          <i class="fa fa-power-off"></i>
+          <span class="text">Logout</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="co2MonitoringSection">
+      <h2 id="main-heading"><u>Environmental Monitoring Dashboard</u></h2>
+      <div class="monitoring-header">
+        <div class="add-room">
+          <button id="addRoomBtn" class="add-icon">
+            <i class="fas fa-plus-circle"></i>
+          </button>
+          <div id="roomDropdown" class="dropdown-content">
+            <!-- Rooms will be populated here dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="gauges-container">
+        <div class="gauge-container">
+          <div class="gauge-header">
+            <div class="room-title">Room 41</div>
+            <div id="timestamp_41"><b>Last Updated:</b></div>
+          </div>
+
+          <div class="box-1">
+            <!-- CO2 Gauge -->
+            <div>
+              <canvas id="co2Gauge_41"></canvas>
+              <div id="co2Value_41">CO2 Level: 0 PPM</div>
+            </div>
+
+            <!-- PM2.5 Gauge -->
+            <div>
+              <canvas id="pm25Gauge_41"></canvas>
+              <div id="pm25Value_41">PM2.5 Level: 0 PPM</div>
+            </div>
+
+            <!-- CO Gauge -->
+            <div>
+              <canvas id="coGauge_41"></canvas>
+              <div id="coValue_41">CO Level: 0 PPM</div>
+            </div>
+          </div>
+
+          <div class="box-2-toggle-container">
+            <div class="box-2">
+              <!-- Temperature Chart -->
+              <div>
+                <p id="temperatureValue_41">Temperature: 0°C</p>
+                <div id="temperatureGauge_41"></div>
+              </div>
+
+              <!-- Humidity Chart -->
+              <div>
+                <p id="humidityValue_41">Humidity: 0%</p>
+                <div id="humidityGauge_41"></div>
+              </div>
+
+              <!-- AQI Chart -->
+              <div>
+                <p id="AQIValue_41">AQI:</p>
+                <div id="AQIGauge_41"></div>
+              </div>
+            </div>
+
+            <div class="toggle-box">
+              <!-- Manual Control Switch -->
+              <div class="switch-container">
+                <div class="switch" onclick="toggleRoomSwitch(41)">
+                  <div class="switch-icon">
+                    <i class="fa-solid fa-toggle-off" id="toggle-icon-41"></i>
+                  </div>
+                </div>
+                <div class="status" id="status-text-41">Status: Off</div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="view-trends-btn"
+            id="viewTrendsBtn_41"
+            class="view-trends-btn"
+          >
+            View Trends
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div id="manualControlSection" class="manual-control-section">
+  </div> -->
+
+    <div id="masterControlSection" class="master-control-section"></div>
+
+    <div id="aboutModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><u>About This Project</u></h2>
+        <p>
+          This automated exhaust system is designed to improve air quality and
+          energy efficiency. Using smart technology, the system automatically
+          adjusts exhaust flow based on real-time conditions, ensuring the best
+          performance with less energy waste. It's a reliable, eco-friendly
+          solution for better ventilation and reduced operational costs.
+        </p>
+      </div>
+    </div>
+
+    <div id="contactModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2><u>Contact Us</u></h2>
+        <form id="contactForm">
+          <textarea id="message" placeholder="Your message here..."></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="registrationModal" class="modal">
+      <div class="register-modal-content">
+        <div class="container">
+          <span class="close">&times;</span>
+          <h2>Register</h2>
+          <form
+            id="registrationForm"
+            method="POST"
+            action=""
+            onsubmit="handleRegistration(event)"
+          >
+            <label for="fname">First Name</label>
+            <input
+              type="text"
+              id="fname"
+              name="firstname"
+              placeholder="Your first name.."
+              required
+            />
+
+            <label for="lname">Last Name</label>
+            <input
+              type="text"
+              id="lname"
+              name="lastname"
+              placeholder="Your last name.."
+              required
+            />
+
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email.."
+              required
+            />
+
+            <label for="room-number">Room Number</label>
+            <input
+              type="text"
+              id="room-number"
+              name="room-number"
+              placeholder="Your room no.."
+              required
+            />
+
+            <label for="password">Password</label>
+            <div class="password-container">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Your password.."
+                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+                title="Password must be at least 8 characters long and include both letters and numbers"
+                required
+              />
+              <span
+                class="toggle-password"
+                onclick="togglePassword('password')"
+              >
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+
+            <input type="submit" value="Register" />
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="trendsModal" class="trends-modal">
+      <div class="trends-modal-content">
+        <!-- Modal Navbar -->
+        <div class="trends-modal-navbar">
+          <span class="trends-close">&times;</span>
+          <h2>Trends for Room <span id="trendsRoomId"></span></h2>
+          <div class="trends-controls">
+            <select id="particulateSelect">
+              <option value="CO2">CO2</option>
+              <option value="PM25">PM2.5</option>
+              <option value="CO">CO</option>
+              <option value="Temperature">Temperature</option>
+              <option value="Humidity">Humidity</option>
+              <option value="AQI">AQI</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Lower Section for Min, Max, Avg -->
+        <div class="trends-stats">
+          <span id="minValue">Min: --</span>
+          <span id="maxValue">Max: --</span>
+          <span id="avgValue">Avg: --</span>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="trends-modal-body">
+          <!-- Sidebar for Time Periods -->
+          <div class="trends-sidebar">
+            <ul>
+              <li data-period="last-hour">Last Hour</li>
+              <li data-period="last-day">Last Day</li>
+              <li data-period="this-week">This Week</li>
+              <li data-period="this-month">This Month</li>
+              <li data-period="this-6-month">This 6-Month</li>
+              <li data-period="this-year">This Year</li>
+            </ul>
+          </div>
+
+          <!-- Chart Area -->
+          <div class="chart-container">
+            <canvas id="trendsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="CO2Gauges.js"></script>
+    <script src="CO2Monitoring.js"></script>
+    <script src="roomManagement.js"></script>
+
+    <script>
+      window.togglePassword = function (inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = passwordInput.nextElementSibling.querySelector("i");
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggleIcon.classList.remove("fa-eye");
+          toggleIcon.classList.add("fa-eye-slash");
+        } else {
+          passwordInput.type = "password";
+          toggleIcon.classList.remove("fa-eye-slash");
+          toggleIcon.classList.add("fa-eye");
+        }
+      };
+    </script>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  </body>
+</html>
