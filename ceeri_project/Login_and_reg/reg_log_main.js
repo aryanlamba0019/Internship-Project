@@ -22,7 +22,7 @@ function handleLogin(event) {
   const email = document.getElementById("login-email").value;
   const password = document.getElementById("login-password").value;
 
-  fetch("http://localhost:5000/login", {
+  fetch("/sensor_iot/ceeri_project/Login_and_reg/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
